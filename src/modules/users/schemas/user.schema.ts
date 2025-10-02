@@ -10,8 +10,8 @@ export class User {
   name: string;
 
   @Prop()
-  emai: number;
-  
+  email: string;
+
   @Prop()
   password: string;
 
@@ -24,14 +24,14 @@ export class User {
   @Prop()
   image: string;
 
-  @Prop()
+  @Prop({default: "USERS"})
   role: string;
 
-  @Prop()
+  @Prop({default: "LOCAL"})
   accountType: string;
 
-  @Prop()
-  isActive: string;
+  @Prop({default: false})
+  isActive: boolean;
 
   @Prop()
   codeId: string;

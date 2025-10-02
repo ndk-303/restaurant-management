@@ -14,6 +14,7 @@ import { MenusModule } from './modules/menus/menus.module';
 import { OrderDetailsModule } from './modules/order.details/order.details.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -37,6 +38,8 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
       }),
         inject: [ConfigService],
     }),
+
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
