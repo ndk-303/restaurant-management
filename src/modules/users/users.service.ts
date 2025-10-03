@@ -56,7 +56,7 @@ export class UsersService {
     return `This action returns a #${id} user`;
   }
 
-  async findByEmail(email: string) {
+  async findByEmail(email: string): Promise<any> {
     return await this.userModel.findOne({ email })
   }
 

@@ -11,18 +11,12 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async validateUser(username: string, pass: string) {  
+  async validateUser(username: string, pass: string): Promise<any> {  
     const user = await this.usersService.findByEmail(username);
-
-    if (!user) {
-      throw new UnauthorizedException('User doesn not exist') 
-    }
-    
     const isValid = await comparePassword(pass, user.password)
 
-    if (!isValid) {
-      throw new UnauthorizedException('Invalid password')
-    }
+    if (!isValid || !user) return null;
+    
 
     return user;
   }
