@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from 'src/auth/passport/local-auth.guard';
 import { JwtAuthGuard } from './passport/jwt-auth.guard';
 import { Public } from 'src/decorator/public.decorator';
+import { CreateAuthDto } from './dto/create-auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -15,6 +16,11 @@ export class AuthController {
     return await this.authService.login(req.user);
   }
 
+  @Post('register')
+  @Public()
+  register(@Body() createAuthDto: CreateAuthDto) {
+    return this.authService.register(createAuthDto);
+  }
   // @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
