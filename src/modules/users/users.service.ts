@@ -63,7 +63,7 @@ export class UsersService {
     return `This action returns a #${id} user`;
   }
 
-  async findByEmail(email: string): Promise<any> {
+  async findByEmail(email: string) {
     return await this.userModel.findOne({ email })
   }
 
@@ -98,9 +98,9 @@ export class UsersService {
     })
 
     this.mailService.sendMail({
-      to: user.email, // list of receivers
-      subject: "Activate your account at @joy's", // Subject line
-      text: 'welcome', // plaintext body
+      to: user.email, 
+      subject: "Activate your account at @joy's", 
+      text: 'welcome', 
       template: 'register',
       context: {
         name: user.name,
@@ -113,6 +113,5 @@ export class UsersService {
     }
   }
 
-  //send email
   
 }

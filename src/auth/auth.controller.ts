@@ -5,6 +5,7 @@ import { JwtAuthGuard } from './passport/jwt-auth.guard';
 import { Public } from 'src/decorator/public.decorator';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { MailerService } from '@nestjs-modules/mailer';
+import { VerifyEmailDto } from './dto/verify-auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -31,17 +32,24 @@ export class AuthController {
   testMail() {
     this.mailService
     .sendMail({
-      to: 'test.devndk@gmail.com', // list of receivers
-      subject: 'Testing Nest MailerModule ✔', // Subject line
-      text: 'welcome', // plaintext body
+      to: 'test.devndk@gmail.com', 
+      subject: 'Testing Nest MailerModule ✔', 
+      text: 'welcome', 
       template: 'register',
       context: {
         name: 'Kevin',
         activationCode: 1234,
       }
     })
-    return 'hello';
+    return 'success';
   }
+
+  @Public()
+  @Post('verify')
+  verify(@Body() verifyDto: VerifyEmailDto) {
+    return this.authService.verify(verifyDto); 
+  }
+  
   // @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {

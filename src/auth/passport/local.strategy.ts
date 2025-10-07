@@ -1,4 +1,3 @@
-
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
@@ -20,6 +19,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     if (user.isActive === false) {
       throw new BadRequestException("Need to activate account")
     }
+
     return user;
   }
 }
