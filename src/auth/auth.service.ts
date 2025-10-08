@@ -14,17 +14,16 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-
+  // check login information
   async validateUser(username: string, pass: string): Promise<any> {  
     const user = await this.usersService.findOne(username);
     const isValid = await comparePassword(pass, user?.password)
 
     if (!isValid || !user) return null;
-    
-
     return user;
   }
 
+  // login and return access token
   async login(user: any) { 
     const payload = { sub: user._id, username: user.email, role: user.role };
     return {  
@@ -38,5 +37,10 @@ export class AuthService {
 
   async verify(verifyDto: VerifyAuthDto) {
     return await this.usersService.verify(verifyDto);
+  }
+
+  // resend activate code to act
+  async resendCode(email: string) {
+    return await this.usersService.resendCode(email)
   }
 }

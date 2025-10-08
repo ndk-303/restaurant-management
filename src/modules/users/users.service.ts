@@ -60,6 +60,7 @@ export class UsersService {
     return { result, totalPages };
   }
 
+
   findOne(value: number | string) {
     if (typeof value === "number") {
         return this.userModel.findOne({ id: value });
@@ -68,12 +69,14 @@ export class UsersService {
     }
   }
 
+
   async update(updateUserDto: UpdateUserDto) {
     return await this.userModel.updateOne(
       {_id: updateUserDto._id},
       {...updateUserDto}
     );
   }
+
 
   async remove(_id: string) {
     if (mongoose.isValidObjectId(_id)) {
@@ -83,6 +86,7 @@ export class UsersService {
     }
   }
 
+  // register new user
   async register(createAuthDto: CreateAuthDto) {
     const {name, email, password} = createAuthDto;
     if (await this.userModel.exists({email: email})) {
@@ -98,6 +102,17 @@ export class UsersService {
       codeExpired: dayjs().add(5, 'minutes')
     })
 
+
+    // send verify code to user email
+    await this.sendEmail(user, codeId)
+
+    return {
+      _id: user._id
+    }
+  }
+
+  // support function to send email
+  async sendEmail(user: User, codeId: string) {
     this.mailService.sendMail({
       to: user.email, 
       subject: "Activate your account at @joy's", 
@@ -108,12 +123,9 @@ export class UsersService {
         activationCode: codeId,
       }
     })
-
-    return {
-      _id: user._id
-    }
   }
 
+  // verify to activate account
   async verify(data: VerifyAuthDto) {
     const user = await this.userModel.findOne({
       _id: data._id
@@ -136,5 +148,32 @@ export class UsersService {
     await this.userModel.updateOne(
       {_id: user._id},
       {isActive: true})
+  }
+
+
+  async resendCode(email: string) {
+    const user = await this.userModel.findOne({ email });
+    if (!user) {
+      throw new BadRequestException('Account does not exist')
     }
+
+    if (user.isActive) {
+      throw new BadRequestException('Account has been already activated') 
+    }
+
+    // get new code
+    const codeId = uuidv4();
+
+    // update new codeId in database
+    await user.updateOne({
+      codeId: codeId,
+      codeExpired: dayjs().add(5, 'minutes')
+    })
+
+    await this.sendEmail(user, codeId);
+
+    return {
+      _id: user._id
+    }
+  }
 }
