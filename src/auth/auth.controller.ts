@@ -5,7 +5,7 @@ import { JwtAuthGuard } from './passport/jwt-auth.guard';
 import { Public } from 'src/decorator/public.decorator';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { MailerService } from '@nestjs-modules/mailer';
-import { VerifyEmailDto } from './dto/verify-auth.dto';
+import { VerifyAuthDto } from './dto/verify-auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -27,30 +27,29 @@ export class AuthController {
     return this.authService.register(createAuthDto);
   }
 
-  @Get('mail')
-  @Public()
-  testMail() {
-    this.mailService
-    .sendMail({
-      to: 'test.devndk@gmail.com', 
-      subject: 'Testing Nest MailerModule ✔', 
-      text: 'welcome', 
-      template: 'register',
-      context: {
-        name: 'Kevin',
-        activationCode: 1234,
-      }
-    })
-    return 'success';
-  }
+  // @Get('mail')
+  // @Public()
+  // testMail() {
+  //   this.mailService
+  //   .sendMail({
+  //     to: 'test.devndk@gmail.com', 
+  //     subject: 'Testing Nest MailerModule ✔', 
+  //     text: 'welcome', 
+  //     template: 'register',
+  //     context: {
+  //       name: 'Kevin',
+  //       activationCode: 1234,
+  //     }
+  //   })
+  //   return 'success';
+  // }
 
   @Public()
   @Post('verify')
-  verify(@Body() verifyDto: VerifyEmailDto) {
+  verify(@Body() verifyDto: VerifyAuthDto) {
     return this.authService.verify(verifyDto); 
   }
   
-  // @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;

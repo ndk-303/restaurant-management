@@ -11,6 +11,7 @@ import { CreateAuthDto } from 'src/auth/dto/create-auth.dto';
 import { v4 as uuidv4 } from 'uuid'
 import dayjs from 'dayjs';
 import { MailerService } from '@nestjs-modules/mailer';
+import { VerifyAuthDto } from 'src/auth/dto/verify-auth.dto';
 
 @Injectable()
 export class UsersService {
@@ -59,12 +60,12 @@ export class UsersService {
     return { result, totalPages };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  async findByEmail(email: string) {
-    return await this.userModel.findOne({ email })
+  findOne(value: number | string) {
+    if (typeof value === "number") {
+        return this.userModel.findOne({ id: value });
+    } else {
+        return this.userModel.findOne({ email: value })
+    }
   }
 
   async update(updateUserDto: UpdateUserDto) {
@@ -113,5 +114,27 @@ export class UsersService {
     }
   }
 
-  
+  async verify(data: VerifyAuthDto) {
+    const user = await this.userModel.findOne({
+      _id: data._id
+    })
+
+    if (!user) {
+      throw new BadRequestException('User does not exist')
+    }
+
+    if (user.codeId != data.codeId) {
+      throw new BadRequestException('Code: Invalid')
+    }
+    
+    const isBefore = dayjs().isBefore(user.codeExpired);
+    
+    if (!isBefore) {
+      throw new BadRequestException('Code: Expired')
+    }
+
+    await this.userModel.updateOne(
+      {_id: user._id},
+      {isActive: true})
+    }
 }

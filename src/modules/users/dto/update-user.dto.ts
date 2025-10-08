@@ -1,4 +1,5 @@
 import { IsMongoId, IsNotEmpty, IsOptional } from "class-validator";
+import { ObjectId } from "mongoose";
 
 export class UpdateUserDto {
     @IsMongoId({ message: 'Invalid Id'})
